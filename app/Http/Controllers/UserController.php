@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -83,4 +85,23 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully']);
     }
 
+
+    public function assignRole(Request $request): JsonResponse
+    {
+
+        $validator = Validator::make($request->all(), [
+            'role_id' => 'required|string|exists:roles,id',
+            'users_id' => 'required|array',
+            'users_id.*' => 'required|numeric|exists:users,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+         $role = Role::findOrFail($request->role_id);
+         $role->users()->attach($request->users_id);
+
+        return response()->json(['message' => 'Role assigned successfully']);
+    }
 }

@@ -18,11 +18,11 @@ class RolePermissionsSeeder extends Seeder
         $permissions = ['view_users', 'edit_users', 'delete_users', 'create_users'];
 
         foreach ($roles as $role) {
-            Role::create(['name' => $role]);
+            Role::query()->create(['name' => $role]);
         }
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::query()->create(['name' => $permission]);
         }
 
         // Assign permissions to roles
